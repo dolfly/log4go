@@ -94,7 +94,9 @@ func (l Level) String() string {
 var (
 	// LogBufferLength specifies how many log messages a particular log4go
 	// logger can buffer at a time before writing them.
-	LogBufferLength = 32
+	LogBufferLength = 10240
+	// whether blocking, if log buffer is full
+	LogWithBlocking = true
 )
 
 /****** LogRecord ******/
@@ -105,8 +107,33 @@ type LogRecord struct {
 	Created time.Time // The time at which the log message was created (nanoseconds)
 	Source  string    // The message source
 	Message string    // The log message
+	Binary  []byte
+}
+/****** LogCloser ******/
+type LogCloser struct {
+	IsEnd       chan bool
 }
 
+func (lc *LogCloser) LogCloserInit() {
+	lc.IsEnd = make(chan bool)
+}
+
+// notyfy the logger log to end
+func (lc *LogCloser) EndNotify(lr *LogRecord) bool {
+	if lr == nil && lc.IsEnd != nil {
+		lc.IsEnd <- true
+		return true
+	}
+	return false
+}
+
+// add nil to end of res and wait that EndNotify is call
+func (lc *LogCloser) WaitForEnd(rec chan *LogRecord) {
+	rec <- nil
+	if lc.IsEnd != nil {
+		<- lc.IsEnd
+	}
+}
 /****** LogWriter ******/
 
 // This is an interface for anything that should be able to write logs
