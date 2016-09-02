@@ -29,7 +29,7 @@ import (
 )
 
 import (
-    "github.com/alecthomas/log4go/strftime"
+    "github.com/dolfly/log4go/strftime"
 )
 
 const (
