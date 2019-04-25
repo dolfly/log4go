@@ -80,7 +80,15 @@ const (
 
 // Logging level strings
 var (
-	levelStrings = [...]string{"FNST", "FINE", "DEBG", "TRAC", "INFO", "WARN", "EROR", "CRIT"}
+	levelStrings = [...]string{
+		"\x1b[0mFNST\x1b[0m",
+		"\x1b[97mFINE\x1b[0m",
+		"\x1b[96mDEBG\x1b[0m",
+		"\x1b[92mTRAC\x1b[0m",
+		"\x1b[92mINFO\x1b[0m",
+		"\x1b[93mWARN\x1b[0m",
+		"\x1b[91mEROR\x1b[0m",
+		"\x1b[95mCRIT\x1b[0m"}
 )
 
 func (l Level) String() string {
@@ -109,9 +117,10 @@ type LogRecord struct {
 	Message string    // The log message
 	Binary  []byte
 }
+
 /****** LogCloser ******/
 type LogCloser struct {
-	IsEnd       chan bool
+	IsEnd chan bool
 }
 
 func (lc *LogCloser) LogCloserInit() {
@@ -131,9 +140,10 @@ func (lc *LogCloser) EndNotify(lr *LogRecord) bool {
 func (lc *LogCloser) WaitForEnd(rec chan *LogRecord) {
 	rec <- nil
 	if lc.IsEnd != nil {
-		<- lc.IsEnd
+		<-lc.IsEnd
 	}
 }
+
 /****** LogWriter ******/
 
 // This is an interface for anything that should be able to write logs
@@ -226,7 +236,7 @@ func (log Logger) intLogf(lvl Level, format string, args ...interface{}) {
 	pc, _, lineno, ok := runtime.Caller(2)
 	src := ""
 	if ok {
-		src = fmt.Sprintf("%s:%d", runtime.FuncForPC(pc).Name(), lineno)
+		src = fmt.Sprintf("\x1b[96m%s:%d\x1b[0m", runtime.FuncForPC(pc).Name(), lineno)
 	}
 
 	msg := format
@@ -270,7 +280,7 @@ func (log Logger) intLogc(lvl Level, closure func() string) {
 	pc, _, lineno, ok := runtime.Caller(2)
 	src := ""
 	if ok {
-		src = fmt.Sprintf("%s:%d", runtime.FuncForPC(pc).Name(), lineno)
+		src = fmt.Sprintf("\x1b[96m%s:%d\x1b[0m", runtime.FuncForPC(pc).Name(), lineno)
 	}
 
 	// Make the log record

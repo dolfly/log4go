@@ -195,8 +195,10 @@ func (w *PanicFileLogWriter) intRotate() error {
 		return err
 	}
 	w.file = fd
-	syscall.Dup2(int(fd.Fd()), 1)
-	syscall.Dup2(int(fd.Fd()), 2)
+	if os.Getenv("LOGGER_MODE") != "debug" {
+		syscall.Dup2(int(fd.Fd()), 1)
+		syscall.Dup2(int(fd.Fd()), 2)
+	}
 	return nil
 }
 
