@@ -188,17 +188,13 @@ func (w *PanicFileLogWriter) intRotate() error {
 	if w.file != nil {
 		w.file.Close()
 	}
-
-	//w.filename = w.baseFilename + "." + strftime.Format(w.suffix, time.Now())
 	fd, err := os.OpenFile(w.filename, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0644)
 	if err != nil {
 		return err
 	}
 	w.file = fd
-	if os.Getenv("LOGGER_MODE") != "debug" {
-		syscall.Dup2(int(fd.Fd()), 1)
-		syscall.Dup2(int(fd.Fd()), 2)
-	}
+	syscall.Dup2(int(fd.Fd()), 1)
+	syscall.Dup2(int(fd.Fd()), 2)
 	return nil
 }
 
