@@ -51,10 +51,10 @@ func FormatLogRecord(format string, rec *LogRecord) string {
 		zone, _ := rec.Created.Zone()
 		updated := &formatCacheType{
 			LastUpdateSeconds: secs,
-			shortTime:         fmt.Sprintf("\x1b[94m%02d:%02d\x1b[0m", hour, minute),
-			shortDate:         fmt.Sprintf("\x1b[94m%02d/%02d/%02d\x1b[0m", day, month, year%100),
-			longTime:          fmt.Sprintf("\x1b[94m%02d:%02d:%02d %s\x1b[0m", hour, minute, second, zone),
-			longDate:          fmt.Sprintf("\x1b[94m%04d/%02d/%02d\x1b[0m", year, month, day),
+			shortTime:         fmt.Sprintf("%02d:%02d", hour, minute),
+			shortDate:         fmt.Sprintf("%02d/%02d/%02d", day, month, year%100),
+			longTime:          fmt.Sprintf("%02d:%02d:%02d %s", hour, minute, second, zone),
+			longDate:          fmt.Sprintf("%04d/%02d/%02d", year, month, day),
 		}
 		cache = *updated
 		formatCache = updated

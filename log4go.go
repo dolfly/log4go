@@ -81,14 +81,14 @@ const (
 // Logging level strings
 var (
 	levelStrings = [...]string{
-		"\x1b[0mFNST\x1b[0m",
-		"\x1b[97mFINE\x1b[0m",
-		"\x1b[96mDEBG\x1b[0m",
-		"\x1b[92mTRAC\x1b[0m",
-		"\x1b[92mINFO\x1b[0m",
-		"\x1b[93mWARN\x1b[0m",
-		"\x1b[91mEROR\x1b[0m",
-		"\x1b[95mCRIT\x1b[0m"}
+		"FNST",
+		"FINE",
+		"DEBG",
+		"TRAC",
+		"INFO",
+		"WARN",
+		"EROR",
+		"CRIT"}
 )
 
 func (l Level) String() string {
@@ -236,7 +236,7 @@ func (log Logger) intLogf(lvl Level, format string, args ...interface{}) {
 	pc, _, lineno, ok := runtime.Caller(2)
 	src := ""
 	if ok {
-		src = fmt.Sprintf("\x1b[96m%s:%d\x1b[0m", runtime.FuncForPC(pc).Name(), lineno)
+		src = fmt.Sprintf("%s:%d", runtime.FuncForPC(pc).Name(), lineno)
 	}
 
 	msg := format
@@ -280,7 +280,7 @@ func (log Logger) intLogc(lvl Level, closure func() string) {
 	pc, _, lineno, ok := runtime.Caller(2)
 	src := ""
 	if ok {
-		src = fmt.Sprintf("\x1b[96m%s:%d\x1b[0m", runtime.FuncForPC(pc).Name(), lineno)
+		src = fmt.Sprintf("%s:%d", runtime.FuncForPC(pc).Name(), lineno)
 	}
 
 	// Make the log record
